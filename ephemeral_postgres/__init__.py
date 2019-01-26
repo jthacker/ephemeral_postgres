@@ -121,7 +121,8 @@ def _wait_for_port(container, uri, timeout):
     """Wait until the specified port can be connected to"""
     now = time.time()
     while time.time() - now < timeout:
-        result, _ = container.exec_run(['psql', uri])
+        result, _ = container.exec_run(
+            ['psql', '-qAt', uri, '-c', 'SELECT 1;'])
         if result == 0:
             return
     raise TimeoutError(

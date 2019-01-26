@@ -1,4 +1,7 @@
 # ephemeral-postgres
+
+[![Build Status](https://travis-ci.org/jthacker/ephemeral_postgres.svg?branch=master)](https://travis-ci.org/jthacker/ephemeral_postgres)
+
 ephemeral-postgres is a python package for easily setting up, testing, and
 finally tearing down postgres instances. It can be easily integrated in most
 test suites but has been primarily used with pytest.

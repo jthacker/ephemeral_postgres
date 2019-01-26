@@ -1,0 +1,5 @@
+*.pyc
+.coverage
+.eggs
+.tox
+ephemeral_postgres.egg-info

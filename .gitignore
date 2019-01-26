@@ -3,3 +3,4 @@
 .eggs
 .tox
 ephemeral_postgres.egg-info
+dist/

@@ -1,11 +1,16 @@
 from contextlib import contextmanager
 import atexit
 import logging
+import os
 import time
 
 import docker
 
 from ._version import __version__
+
+
+#: Environment variable key used for overriding creating of a container
+ENV_KEY = 'EPHEMERAL_POSTGRES_URI'
 
 
 #: containers that have been started and need to be removed
@@ -56,6 +61,23 @@ def postgres(database=None, user=None, password=None, port=None,
     uri, container -- uri is a postgresql URI for connecting to the container,
         container is a docker container instance for controlling the instance
     """
+    try:
+        uri = os.environ[ENV_KEY]
+        # check if any parameters have been overridden
+        param_override = any((
+            database is not None,
+            user is not None,
+            password is not None,
+            port is not None,
+            version is not None))
+        if param_override:
+            logging.warning(
+                'The environment variable override (%r) was set, ignoring '
+                'argument overrides.',
+                ENV_KEY)
+        return uri, None
+    except KeyError:
+        pass
     if database is None:
         database = 'mydb'
     if user is None:
@@ -105,8 +127,9 @@ def postgres_ctx(*args, **kwargs):
     """
     uri, container = postgres(*args, **kwargs)
     yield uri
-    container.stop()
-    _containers.remove(container)
+    if container is not None:
+        container.stop()
+        _containers.remove(container)
 
 
 def _postgres_uri(user, password, port, database):

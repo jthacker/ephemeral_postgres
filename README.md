@@ -25,6 +25,14 @@ with ephemeral_postgres.postgres() as uri:
         print(row)
 ```
 
+Alternatively, if you would like to run an external Postgres server, you can
+override ephemeral_postgres from starting a new instance by setting the
+environment variable `EPHEMERAL_POSTGRES_URI` accordingly. For example:
+```bash
+export EPHEMERAL_POSTGRES_URI="postgresql://postgres:postgres@localhost:5432/postgres"
+python "import ephemeral_postgres; print(ephemeral_postgres.postgres()[0])"
+```
+
 ## Developing
 ```bash
 pip install -e .[test]

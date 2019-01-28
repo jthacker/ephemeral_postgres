@@ -56,7 +56,7 @@ def test_mock_postgres_defaults(mocker):
         actual_port)
 
 
-def test_postgres():
+def test_postgres_ctx():
     """
     test actually starting postgres
     """
@@ -95,3 +95,16 @@ def test_postgres():
             (3, 'bolt')]
         cur.close()
         con.close()
+
+
+def test_postgres_env_override(monkeypatch):
+    """
+    test that when the environment variable override is enabled, a new
+    container is not started up
+    """
+    monkeypatch.setenv(ep.ENV_KEY, 'a postgresql uri')
+    uri, container = ep.postgres()
+    assert uri == 'a postgresql uri'
+    assert container is None
+    with ep.postgres_ctx() as uri:
+        assert uri == 'a postgresql uri'
